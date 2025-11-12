@@ -1,5 +1,11 @@
 const connection = new signalR.HubConnectionBuilder()
-    .withUrl(URL.concat("/chat"))
+    .withUrl(URL.concat("/chat"), {
+    	accessTokenFactory: () => {
+    		let token = localStorage.getItem("token");
+    		console.log("connection token: ", token)
+    		return token;
+    	}
+    })
     .configureLogging(signalR.LogLevel.Information)
     .build();
     console.log("connection1: ", connection)
@@ -40,5 +46,16 @@ button.addEventListener('click', () => {
 	console.log("message: ", message)
 	user = JSON.parse(localStorage.getItem("user"));
 
-	connection.invoke("SendMessage", user.name, message)
+	// connection.invoke("SendMessage", user.name, message)
+
+	fetch(URL.concat("/User/SendMessage"), {
+		method: "post",
+		headers: {
+			"Authorization": `Bearer ${localStorage.getItem("token")}`,
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({
+			Text: message
+		})
+	})
 });
