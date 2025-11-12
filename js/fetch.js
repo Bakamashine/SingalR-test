@@ -62,6 +62,12 @@ async function GetUser() {
 	}
 }
 
+async function GetChatWithUser() {
+	let result = await AuthFetch(URL.concat("/User/GetChatUserWithOtherUser?toUserId=1"));
+	let messages = await result.json();
+	return messages;
+}
+
 function DeleteFormLogin() {
 	const exitButton = document.createElement("button");
 	exitButton.textContent = "Выход"
@@ -91,6 +97,16 @@ if (token) {
 	console.log("user: ", user);
 	if (user) {
 		localStorage.setItem("user", JSON.stringify(user));
+		const messages = await GetChatWithUser();
+		console.log("old messages: ", messages);
+		messages.forEach(elem => {
+
+			document.querySelector("#messages").innerHTML += `
+		<div>${elem.toUserId}: ${elem.content}</div>
+		`
+		})
+
+
 		let img = document.createElement("img");
 		img.src = user.avatar;
 		img.alt = "avatar"

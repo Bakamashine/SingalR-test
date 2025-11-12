@@ -28,7 +28,7 @@ connection.onclose(async () => {
 
 const messages = document.querySelector("#messages")
 connection.on("ReceiveMessage", (user, message) => {
-	console.log("Receive message: ", message)
+	console.log(`Получение сообщение от пользователя ${user}: ${message}`)
 	let context = `
 	<div>${user}: ${message}</div>
 	`
@@ -39,11 +39,14 @@ start()
 
 const button = document.querySelector("#send");
 const message_input = document.querySelector("#message");
+const userId_input = document.querySelector("#userId");
 // console.log("button: ", button);
 button.addEventListener('click', () => {
 	console.log("sended!")
 	let message = message_input.value;
+	let userId = userId_input.value;
 	console.log("message: ", message)
+	console.log("Other userId", userId)
 	user = JSON.parse(localStorage.getItem("user"));
 
 	// connection.invoke("SendMessage", user.name, message)
@@ -55,6 +58,7 @@ button.addEventListener('click', () => {
 			"Content-Type": "application/json"
 		},
 		body: JSON.stringify({
+			UserId: userId,
 			Text: message
 		})
 	})
